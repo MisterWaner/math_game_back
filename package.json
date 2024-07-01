@@ -1,0 +1,29 @@
+{
+    "name": "math_game_backend",
+    "version": "1.0.0",
+    "description": "",
+    "main": "app.js",
+    "type": "module",
+    "scripts": {
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "build": "tsc",
+        "start": "node dist/app.js",
+        "dev": "concurrently -k -n \"Typescript,Node\" -p \"[{name}]\" -c \"blue,green\" \"tsc --watch\" \"nodemon -r dotenv/config dist/app.js\" "
+    },
+    "author": "Erwan Soulas",
+    "license": "ISC",
+    "dependencies": {
+        "@types/cors": "^2.8.17",
+        "@types/express": "^4.17.21",
+        "concurrently": "^8.2.2",
+        "cors": "^2.8.5",
+        "dotenv": "^16.4.5",
+        "express": "^4.19.2"
+    },
+    "devDependencies": {
+        "@types/node": "^20.14.9",
+        "nodemon": "^3.1.4",
+        "ts-node": "^10.9.2",
+        "typescript": "^5.5.3"
+    }
+}
