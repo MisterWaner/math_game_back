@@ -1,5 +1,6 @@
 import express, { Request, Response } from "express";
 import { config } from "dotenv";
+import { initDb } from "./lib/data.js";
 
 config();
 
@@ -15,4 +16,5 @@ app.get("/", (req: Request, res: Response) => {
 
 app.listen(port, () => {
     console.log(`Server démarré sur le port ${port}`);
+    initDb();
 })
