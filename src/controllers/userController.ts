@@ -42,6 +42,44 @@ async function createUser(req: Request, res: Response) {
     
     const user = db.prepare("INSERT INTO users (username, password, age, level) VALUES (?, ?, ?, ?)").run(username, hashedPassword, age, level);
 
-    return res.status(201).json({ user });
+    return res.status(201).json(user);
 }
-export { getUsers, getUser, createUser };
+
+async function updateUser(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const { username, age, level } = req.body as User;
+    if (!username || !age || !level) {
+        return res.status(400).send("Champs obligatoires manquants");
+    }
+    
+    const user = db.prepare("UPDATE users SET username = ?, age = ?, level = ? WHERE id = ?").run(username, age, level, id);
+
+    return res.status(200).json(user);
+}
+
+function deleteUser(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const user = db.prepare("DELETE FROM users WHERE id = ?").run(id);
+
+    return res.status(200).json(user);
+}
+
+async function updateUserPassword(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const { password } = req.body as User;
+    const confirmPassword: string = req.body.confirmPassword;
+
+    if (!password) {
+        return res.status(400).send("Champs obligatoires manquants");
+    }
+    if (confirmPassword !== password) {
+        return res.status(400).send("Les mots de passe ne correspondent pas");
+    }
+    
+    const hashedPassword = await hashPwd(password);
+
+    const user = db.prepare("UPDATE users SET password = ? WHERE id = ?").run(hashedPassword, id);
+
+    return res.status(200).json(user);
+}
+export { getUsers, getUser, createUser, updateUser, deleteUser, updateUserPassword };
