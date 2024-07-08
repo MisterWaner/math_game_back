@@ -3,5 +3,10 @@ export type User = {
     username: string,
     password: string,
     age: number,
-    level: string
+    level: string,
+    isRegistered: boolean,
+    dailyScore: number,
+    weeklyScore: number,
+    monthlyScore: number,
+    globalScore: number,
 }

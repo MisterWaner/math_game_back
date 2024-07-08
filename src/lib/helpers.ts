@@ -7,6 +7,8 @@ import { User } from "../models/user.js";
 config();
 
 const db = sql("mathgame.db");
+
+
 export async function hashPwd(password: string): Promise<string> {
     const salt: number = Number(process.env.BCRYPT_SALT_ROUND);
     const hashedPassword = await bcrypt.hash(password, salt);
@@ -42,3 +44,5 @@ export async function generateToken(userId: number | undefined): Promise<string>
     );
     return jwtToken;
 }
+
+
