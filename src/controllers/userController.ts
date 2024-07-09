@@ -5,8 +5,16 @@ import { User } from "../models/user.js";
 import { hashPwd } from "../lib/helpers.js";
 const db = sql("mathgame.db");
 
+function fetchUsers(): User[] {
+    return db.prepare("SELECT * FROM users").all() as User[];
+}
+
+function fetchUser(id: number): User | undefined {
+    return db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User;
+}
+
 function getUsers(req: Request, res: Response) {
-    const users = db.prepare("SELECT * FROM users").all() as User[];
+    const users = fetchUsers();
     if (users.length === 0) {
         return res.status(404).send("Aucun utilisateur trouvé");
     }
@@ -15,7 +23,7 @@ function getUsers(req: Request, res: Response) {
 
 function getUser(req: Request, res: Response) {
     const id = Number(req.params.id);
-    const user = db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User;
+    const user = fetchUser(id);
     if (user === undefined) {
         return res.status(404).send("Utilisateur introuvable");
     }
@@ -82,4 +90,22 @@ async function updateUserPassword(req: Request, res: Response) {
 
     return res.status(200).json(user);
 }
-export { getUsers, getUser, createUser, updateUser, deleteUser, updateUserPassword };
+
+function updateUserDailyScore(req: Request, res: Response) {
+    const { id, score } = req.body as { id: number, score: number };
+    const user = fetchUser(id);
+    if (!user) {
+        return res.status(404).send("Utilisateur introuvable");
+    }
+
+    if (score < 0) {
+        return res.status(400).send("Score invalide");
+    }
+
+    const updatedUser = db.prepare("UPDATE users SET daily_score = ? WHERE id = ?").run(score, id);
+    return res.status(200).json(updatedUser);
+}
+    
+
+
+export { fetchUsers, getUsers, getUser, createUser, updateUser, deleteUser, updateUserPassword, updateUserDailyScore };
