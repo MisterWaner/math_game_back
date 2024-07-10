@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { config } from "dotenv";
 import { initDb } from "./lib/data.js";
+import "./lib/score-tasks.js"
 
 import userRouter from "./routers/user-router.js";
 import authRouter from "./routers/auth-router.js";
