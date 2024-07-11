@@ -36,8 +36,8 @@ async function createUser(req: Request, res: Response) {
         return res.status(400).send("Champs obligatoires manquants");
     }
 
-    const confirmPassword: string = req.body.confirmPassword;
-    if (confirmPassword !== password) {
+    const confirmation: string = req.body.confirmation;
+    if (confirmation !== password) {
         return res.status(400).send("Les mots de passe ne correspondent pas");
     }
 
