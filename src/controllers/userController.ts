@@ -13,6 +13,10 @@ function fetchUser(id: number): User | undefined {
     return db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User;
 }
 
+function fetchInvitedUser(id: number): User | undefined {
+    return db.prepare("SELECT * FROM users WHERE id = ? AND is_registered = false").get(id) as User;
+}
+
 function getUsers(req: Request, res: Response) {
     const users = fetchUsers();
     if (users.length === 0) {
@@ -30,7 +34,7 @@ function getUser(req: Request, res: Response) {
     return res.status(200).json(user);
 }
 
-async function createUser(req: Request, res: Response) {
+async function createRegisteredUser(req: Request, res: Response) {
     const { username, password, age, level } = req.body as User;
     if (!username || !password || !age || !level) {
         return res.status(400).send("Champs obligatoires manquants");
@@ -47,8 +51,23 @@ async function createUser(req: Request, res: Response) {
     if (userExists) {
         return res.status(400).send("Ce nom d'utilisateur existe déjà");
     }
+
+    const IsRegistered = 1;
     
-    const user = db.prepare("INSERT INTO users (username, password, age, level) VALUES (?, ?, ?, ?)").run(username, hashedPassword, age, level);
+    const user = db.prepare("INSERT INTO users (username, password, age, level, is_registered) VALUES (?, ?, ?, ?, ?)").run(username, hashedPassword, age, level, IsRegistered);
+
+    return res.status(201).json(user);
+}
+
+async function createInvitedUser(req: Request, res: Response) {
+    const { username, age, level } = req.body as User;
+    if (!username || !age || !level) {
+        return res.status(400).send("Champs obligatoires manquants");
+    }
+
+    const IsRegistered = 0;
+    
+    const user = db.prepare("INSERT INTO users (username, age, level, is_registered) VALUES (?, ?, ?, ?)").run(username, age, level, IsRegistered);
 
     return res.status(201).json(user);
 }
@@ -105,7 +124,17 @@ function updateUserDailyScore(req: Request, res: Response) {
     const updatedUser = db.prepare("UPDATE users SET daily_score = ? WHERE id = ?").run(score, id);
     return res.status(200).json(updatedUser);
 }
-    
+
+function deleteInvitedUser(req: Request, res: Response) {
+    const id = Number(req.params.id);
+    const user = fetchInvitedUser(id);
+    if (!user) {
+        return res.status(404).send("Utilisateur introuvable");
+    }
+    const deletedUser = db.prepare("DELETE * FROM users WHERE username = ?").run(user.username);
+    return res.status(200).json(deletedUser);
+}
 
 
-export { fetchUsers, getUsers, getUser, createUser, updateUser, deleteUser, updateUserPassword, updateUserDailyScore };
+
+export { fetchUsers, getUsers, getUser, createRegisteredUser, createInvitedUser, updateUser, deleteUser, updateUserPassword, updateUserDailyScore, deleteInvitedUser };
