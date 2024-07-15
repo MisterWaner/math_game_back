@@ -32,17 +32,21 @@ export async function authenticate(username: string, password: string) {
     return user;
 }
 
-export async function generateToken(userId: number | undefined): Promise<string> {
+export async function generateToken(user: User | undefined): Promise<string> {
     const maxAge: number = 3600000; // 1 hour
     const secret: string = process.env.JWT_SECRET || "";
     const jwtToken = jwt.sign(
         {
-            id: userId,
+            id: user?.id,
+            username: user?.username,
+            level: user?.level,
+            age: user?.age,
         },
         secret,
         { expiresIn: maxAge }
     );
     return jwtToken;
 }
+
 
 

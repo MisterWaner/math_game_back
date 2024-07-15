@@ -1,6 +1,7 @@
 import express, { Request, Response } from "express";
 import { config } from "dotenv";
 import cors from "cors";
+import cookieParser from "cookie-parser";
 import methodOverride from "method-override";
 import { initDb } from "./lib/data.js";
 import "./lib/score-tasks.js";
@@ -21,6 +22,7 @@ app.use(
             "Origin, X-Requested-With, x-access-token, role, Content, Accept, Content-Type, Authorization",
     })
 );
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
