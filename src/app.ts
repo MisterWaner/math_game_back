@@ -8,6 +8,7 @@ import "./lib/score-tasks.js";
 
 import userRouter from "./routers/user-router.js";
 import authRouter from "./routers/auth-router.js";
+import scoreRouter from "./routers/score-router.js";
 
 config();
 
@@ -33,6 +34,7 @@ app.get("/", (req: Request, res: Response) => {
 
 app.use("/users", userRouter);
 app.use("/auth", authRouter);
+app.use("/scores", scoreRouter);
 
 app.listen(port, () => {
     console.log(`Server démarré sur le port ${port}`);

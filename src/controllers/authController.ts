@@ -12,20 +12,20 @@ async function login(req: Request, res: Response) {
         const user = await authenticate(username, password);
         if (!user) {
             return res.status(401).json("Mot de passe ou pseudo incorrect");
+        } else {
+            const token = await generateToken(user);
+
+            res.cookie("token", token, {
+                httpOnly: true,
+                secure: true,
+                sameSite: "none",
+                maxAge: 3600000,
+            });
+            res.status(200).json({
+                token: token,
+                message: "Authentification réussie",
+            });
         }
-
-        const token = await generateToken(user);
-
-        res.cookie("token", token, {
-            httpOnly: true,
-            secure: true,
-            sameSite: "none",
-            maxAge: 3600000,
-        });
-        res.status(200).json({
-            token: token,
-            message: "Authentification réussie",
-        });
     } catch (error) {
         res.status(500).json({
             message: "Erreur lors de la connexion",

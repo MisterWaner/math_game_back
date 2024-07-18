@@ -9,6 +9,8 @@ function fetchUsers(): User[] {
     return db.prepare("SELECT * FROM users").all() as User[];
 }
 
+
+
 function fetchUser(id: number): User | undefined {
     return db.prepare("SELECT * FROM users WHERE id = ?").get(id) as User;
 }
