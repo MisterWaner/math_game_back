@@ -23,6 +23,12 @@ function fetchUsersMonthlyScore(): User[] {
         .all() as User[];
 }
 
+function fetchTop5Scores(): User[] {
+    return db
+        .prepare("SELECT * FROM users ORDER BY global_score DESC LIMIT 5")
+        .all() as User[];
+}
+
 function getUsersDailyScore(req: Request, res: Response) {
     try {
         const users = fetchUsersDailyScore();
@@ -62,4 +68,17 @@ function getUsersMonthlyScore(req: Request, res: Response) {
     }
 }
 
-export { getUsersDailyScore, getUsersWeeklyScore, getUsersMonthlyScore };
+function getTop5Scores(req: Request, res: Response) {
+    try {
+        const users = fetchTop5Scores();
+        if (users.length === 0) {
+            return res.status(404).send("Aucun utilisateur trouvé");
+        }
+        console.log(users);
+        return res.status(200).json(users);
+    } catch (error) {
+        return res.status(500).send(error);
+    }
+}
+
+export { getUsersDailyScore, getUsersWeeklyScore, getUsersMonthlyScore, getTop5Scores };
