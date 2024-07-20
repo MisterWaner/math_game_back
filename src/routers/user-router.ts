@@ -18,9 +18,9 @@ userRouter.get("/:id", getUser);
 userRouter.post("/", createRegisteredUser);
 userRouter.post("/invited", createInvitedUser);
 userRouter.put("/:id", updateUser);
-userRouter.put("/:id/update-score", updateUserDailyScore);
+userRouter.put("/:username/update-score", updateUserDailyScore);
 userRouter.put("/:id/password", updateUserPassword);
 userRouter.delete("/:id", deleteUser);
-userRouter.delete("/invited/:id", deleteInvitedUser);
+userRouter.delete("/invited/:username", deleteInvitedUser);
 
 export default userRouter;
